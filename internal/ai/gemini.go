@@ -64,7 +64,7 @@ func (g *gemini) Complete(ctx context.Context, prompt string) (string, error) {
 		return "", fmt.Errorf("gemini: missing API key (set THREATPRISM_AI_API_KEY)")
 	}
 	reqBody := geminiRequest{
-		SystemInstruction: &geminiContent{Parts: []geminiPart{{Text: systemGuard}}},
+		SystemInstruction: &geminiContent{Parts: []geminiPart{{Text: PromptForMode(g.model)}}},
 		Contents:          []geminiContent{{Role: "user", Parts: []geminiPart{{Text: prompt}}}},
 	}
 	data, err := json.Marshal(reqBody)

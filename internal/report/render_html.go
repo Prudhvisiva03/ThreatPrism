@@ -173,6 +173,52 @@ summary{cursor:pointer;font-weight:600}
   </div>
   {{end}}
 
+  <div class="section">
+    <h2>Interactive Asset Map</h2>
+    <div class="card" style="padding:20px;text-align:center;overflow-x:auto;">
+      <svg id="assetMap" width="800" height="320" style="background:var(--panel2);border-radius:12px;border:1px solid var(--border)">
+        <style>
+          .node { fill: var(--panel); stroke: var(--accent); stroke-width: 2px; cursor: pointer; rx: 8px; }
+          .node:hover { fill: var(--panel2); stroke: var(--accent2); }
+          .node-text { fill: var(--text); font-size: 12px; font-weight: 600; font-family: sans-serif; text-anchor: middle; dominant-baseline: middle; }
+          .node-sub { fill: var(--muted); font-size: 10px; font-family: monospace; text-anchor: middle; }
+          .edge { stroke: var(--border); stroke-width: 2px; stroke-dasharray: 4; animation: dash 20s linear infinite; }
+        </style>
+        <!-- Center Target Node -->
+        <line x1="400" y1="160" x2="160" y2="70" class="edge" />
+        <line x1="400" y1="160" x2="640" y2="70" class="edge" />
+        <line x1="400" y1="160" x2="160" y2="250" class="edge" />
+        <line x1="400" y1="160" x2="640" y2="250" class="edge" />
+
+        <g transform="translate(320, 135)">
+          <rect class="node" width="160" height="50" stroke="var(--accent2)" />
+          <text x="80" y="20" class="node-text">{{.R.Target.Host}}</text>
+          <text x="80" y="36" class="node-sub">Target Apex</text>
+        </g>
+        <g transform="translate(80, 45)">
+          <rect class="node" width="160" height="50" />
+          <text x="80" y="20" class="node-text">Subdomains ({{len .R.Subdomains}})</text>
+          <text x="80" y="36" class="node-sub">Discovery Surface</text>
+        </g>
+        <g transform="translate(560, 45)">
+          <rect class="node" width="160" height="50" />
+          <text x="80" y="20" class="node-text">Logins ({{len .R.LoginPages}})</text>
+          <text x="80" y="36" class="node-sub">Auth Interfaces</text>
+        </g>
+        <g transform="translate(80, 225)">
+          <rect class="node" width="160" height="50" />
+          <text x="80" y="20" class="node-text">APIs ({{len .R.APIEndpoints}})</text>
+          <text x="80" y="36" class="node-sub">REST / GraphQL</text>
+        </g>
+        <g transform="translate(560, 225)">
+          <rect class="node" width="160" height="50" />
+          <text x="80" y="20" class="node-text">JS Files ({{len .R.JSFiles}})</text>
+          <text x="80" y="36" class="node-sub">Code & Secrets</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
   {{if .R.Technologies}}
   <div class="section">
     <h2>Technologies</h2>

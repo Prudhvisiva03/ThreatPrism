@@ -99,3 +99,11 @@ func dedupPaths(in []string) []string {
 
 // severityClass maps a severity to a CSS class / label token.
 func severityClass(s models.Severity) string { return strings.ToLower(string(s)) }
+
+// RenderHTML exposes HTML rendering for the web dashboard server.
+func RenderHTML(r *models.Result, theme string) ([]byte, error) {
+	if theme == "" {
+		theme = "dark"
+	}
+	return renderHTML(r, theme)
+}

@@ -38,7 +38,31 @@ func NewProvider(cfg config.AIConfig) (Provider, error) {
 	}
 }
 
-// systemGuard is prepended to every prompt to enforce the advisory-only policy.
-const systemGuard = "You are ThreatPrism's AI assistant for security reconnaissance. " +
-	"You only explain findings, summarize scans, score and prioritize risk, and suggest further reconnaissance. " +
-	"You never provide exploit code, payloads, or instructions to attack, compromise, or gain unauthorized access to systems."
+// System prompts tailored for different AI modes.
+const (
+	SystemGuardBeginner = "You are ThreatPrism's AI Assistant in Beginner Mode. " +
+		"Explain security reconnaissance findings using simple, clear, non-jargon language. " +
+		"Focus on explaining WHAT was found and WHY it matters in plain English. " +
+		"Never provide exploit code, attack payloads, or instructions to gain unauthorized access."
+
+	SystemGuardProfessional = "You are ThreatPrism's AI Assistant in Professional Mode. " +
+		"Provide technical triage of reconnaissance findings, asset exposure analysis, risk weights, and actionable next recon steps. " +
+		"Never provide exploit code, attack payloads, or instructions to gain unauthorized access."
+
+	SystemGuardEnterprise = "You are ThreatPrism's AI Assistant in Enterprise Mode. " +
+		"Focus on attack surface management, asset inventory classification, risk score impact, executive summary, and high-level compliance/remediation priorities. " +
+		"Never provide exploit code, attack payloads, or instructions to gain unauthorized access."
+)
+
+// PromptForMode returns the appropriate system prompt based on the configured AI mode.
+func PromptForMode(mode string) string {
+	switch strings.ToLower(strings.TrimSpace(mode)) {
+	case "beginner":
+		return SystemGuardBeginner
+	case "enterprise":
+		return SystemGuardEnterprise
+	default:
+		return SystemGuardProfessional
+	}
+}
+

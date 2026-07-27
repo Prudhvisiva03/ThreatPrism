@@ -93,7 +93,7 @@ func (o *openaiChat) Complete(ctx context.Context, prompt string) (string, error
 		Model:       o.model,
 		Temperature: 0.3,
 		Messages: []chatMessage{
-			{Role: "system", Content: systemGuard},
+			{Role: "system", Content: PromptForMode(o.model)},
 			{Role: "user", Content: prompt},
 		},
 	}

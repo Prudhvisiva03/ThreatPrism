@@ -53,7 +53,7 @@ func (o *ollama) Complete(ctx context.Context, prompt string) (string, error) {
 	reqBody := ollamaRequest{
 		Model:  o.model,
 		Prompt: prompt,
-		System: systemGuard,
+		System: PromptForMode(o.model),
 		Stream: false,
 	}
 	data, err := json.Marshal(reqBody)
