@@ -37,37 +37,6 @@ func ComputeRisk(r *models.Result) int {
 	return score
 }
 
-// EstimateBountyPayout calculates estimated HackerOne/Bugcrowd bounty rewards based on finding severity and category.
-func EstimateBountyPayout(f models.Finding) (string, string) {
-	t := f.Type
-	sev := f.Severity
-
-	switch sev {
-	case models.SeverityCritical:
-		if t == "rce" || t == "sqli" || t == "auth_bypass" {
-			return "$1,500 – $3,000", "Critical Vulnerability (RCE/SQLi/Auth Bypass)"
-		}
-		return "$1,500+", "Critical Impact"
-	case models.SeverityHigh:
-		if t == "ssrf" || t == "account_takeover" || t == "idor" {
-			return "$750 – $1,500", "High Severity (SSRF/ATO/IDOR)"
-		}
-		return "$750 – $1,000", "High Impact"
-	case models.SeverityMedium:
-		if t == "xss" || t == "logic_bypass" {
-			return "$150 – $400", "Medium Severity (XSS/Logic)"
-		}
-		return "$150 – $300", "Medium Impact"
-	case models.SeverityLow:
-		if t == "subdomain_takeover" {
-			return "$50 – $100", "Low Severity (Subdomain Takeover)"
-		}
-		return "$50", "Low Impact"
-	default:
-		return "$0 (Informative)", "Out of Scope / No Direct Impact"
-	}
-}
-
 // IsOutOfScopeNoise checks if a finding type is typically excluded by bug bounty programs (e.g. SPF/DKIM, Clickjacking, Self-XSS).
 func IsOutOfScopeNoise(f models.Finding) bool {
 	t := f.Type
@@ -84,4 +53,3 @@ func IsOutOfScopeNoise(f models.Finding) bool {
 func errorf(format string, args ...any) error {
 	return fmt.Errorf(format, args...)
 }
-
