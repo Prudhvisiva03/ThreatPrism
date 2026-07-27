@@ -1,0 +1,14 @@
+name: nuclei
+description: Fast, template-based vulnerability scanner by ProjectDiscovery
+category: analysis
+command: nuclei
+args:
+  - -u
+  - "{{url}}"
+  - -silent
+modes:
+  - deep
+output: lines
+severity: medium
+timeout: 600
+enabled: false

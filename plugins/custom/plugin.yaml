@@ -1,0 +1,14 @@
+# Template for a custom plugin. Copy this directory, rename it, and edit.
+# Supported arg placeholders: {{target}} {{host}} {{url}} {{output}}
+name: custom
+description: Example custom plugin — replace with your own tool
+category: plugin
+command: echo
+args:
+  - "scanning {{url}} (host={{host}})"
+modes:
+  - deep
+output: lines      # lines | json | ignore
+severity: info     # info | low | medium | high | critical
+timeout: 120
+enabled: false

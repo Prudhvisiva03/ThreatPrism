@@ -1,0 +1,36 @@
+# Binaries
+/bin/
+/dist/
+threatprism
+threatprism.exe
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+*.out
+coverage.*
+
+# Go workspace
+go.work
+go.work.sum
+
+# ThreatPrism runtime data
+/workspaces/
+*.db
+*.db-shm
+*.db-wal
+*.log
+
+# Local config with secrets
+config.local.yaml
+config.yaml
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

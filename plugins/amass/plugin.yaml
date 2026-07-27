@@ -1,0 +1,15 @@
+name: amass
+description: In-depth subdomain enumeration by OWASP
+category: discovery
+command: amass
+args:
+  - enum
+  - -passive
+  - -d
+  - "{{host}}"
+modes:
+  - deep
+output: lines
+severity: info
+timeout: 600
+enabled: false

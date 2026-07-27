@@ -1,0 +1,61 @@
+# ThreatPrism configuration example.
+# Copy to config.yaml (in the working directory or ~/.config/threatprism/) and edit.
+# All fields are optional — anything omitted falls back to built-in defaults.
+
+# Root directory under which per-target workspaces are created.
+workspace_dir: ""   # empty = ~/.threatprism/workspaces
+
+log:
+  level: info        # debug | info | warn | error
+  format: text       # text | json
+  file: true         # also write threatprism.log inside the workspace
+
+http:
+  timeout: 15s
+  concurrency: 40
+  rate_limit_per_sec: 0     # 0 = unlimited
+  retries: 2
+  user_agent: "ThreatPrism/1.0 (+https://github.com/threatprism/threatprism)"
+  follow_redirects: true
+  insecure_tls: true        # recon commonly targets hosts with bad certs
+  proxy_url: ""             # e.g. http://127.0.0.1:8080 to route through Burp
+
+recon:
+  default_mode: standard    # quick | standard | deep | custom
+  custom_modules: []        # module slugs used when default_mode: custom
+
+discovery:
+  passive_sources: [crtsh, hackertarget, rapiddns, wayback]
+  resolve_dns: true
+  probe_alive: true
+  wayback: true
+  max_subdomains: 5000
+
+crawler:
+  max_depth: 3
+  max_pages: 500
+  parse_robots: true
+  parse_sitemap: true
+  crawl_js: true
+
+directory_discovery:
+  wordlist: ""              # path to a custom wordlist; empty = built-in list
+  extensions: ["", "php", "json", "bak", "old", "zip"]
+  concurrency: 40
+
+ai:
+  enabled: false
+  provider: ollama          # openai | gemini | openrouter | ollama
+  model: llama3.1
+  mode: professional        # beginner | professional
+  base_url: ""              # override provider endpoint (e.g. self-hosted)
+  api_key: ""               # prefer env var THREATPRISM_AI_API_KEY
+
+report:
+  formats: [html, json, markdown]   # html | pdf | markdown | json | csv
+  theme: dark               # dark | light
+  open_after: false
+
+plugins:
+  dir: plugins
+  enabled: []               # plugin names to run during a scan
