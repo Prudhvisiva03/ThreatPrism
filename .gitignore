@@ -28,9 +28,11 @@ go.work.sum
 config.local.yaml
 config.yaml
 
-# OS / editor
+# OS / editor / AI assistants
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
+.claude/
+.gemini/
 *.swp
