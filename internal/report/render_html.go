@@ -267,6 +267,32 @@ summary{cursor:pointer;font-weight:600}
   </div>
   {{end}}
 
+  {{if .R.LoginPages}}
+  <div class="section">
+    <h2>Login &amp; Authentication Surfaces Explorer</h2>
+    <div class="card" style="padding:0;overflow:hidden">
+    <table>
+      <thead><tr><th>Kind</th><th>Login URL</th><th>Auth Type</th><th>Detected Tech Stack</th><th>Security Features</th></tr></thead>
+      <tbody>
+      {{range .R.LoginPages}}
+        <tr>
+          <td><span class="badge high">{{.Kind}}</span></td>
+          <td class="mono"><a href="{{.URL}}" target="_blank" rel="noopener">{{.URL}}</a></td>
+          <td><span class="badge info">{{if .AuthType}}{{.AuthType}}{{else}}Standard Form{{end}}</span></td>
+          <td class="muted">{{if .Tech}}{{range .Tech}}<span class="chip" style="font-size:10px;padding:2px 6px"><b>{{.}}</b></span> {{end}}{{else}}<span class="muted">Fingerprinted Server</span>{{end}}</td>
+          <td>
+            {{if .HasOAuth}}<span class="badge low">OAuth</span>{{end}}
+            {{if .HasCSRF}}<span class="badge info">CSRF Protection</span>{{else}}<span class="badge critical">No CSRF Token</span>{{end}}
+            {{if .HasCaptcha}}<span class="badge low">Captcha</span>{{end}}
+          </td>
+        </tr>
+      {{end}}
+      </tbody>
+    </table>
+    </div>
+  </div>
+  {{end}}
+
   {{if .R.APIEndpoints}}
   <div class="section">
     <h2>API Explorer</h2>
