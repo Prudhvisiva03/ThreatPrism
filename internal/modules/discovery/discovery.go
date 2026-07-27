@@ -56,8 +56,10 @@ func (m *Module) Run(rc *module.RunContext) error {
 	var urls []models.URLEntry
 	if m.waybackEnabled(rc) {
 		rc.Progress.Stepf("collecting historical URLs from Wayback Machine")
-		urls = m.wayback(rc, domain)
-		rc.Progress.Stepf("collected %d historical URLs", len(urls))
+		rawURLs := m.wayback(rc, domain)
+		rc.Progress.Stepf("collected %d raw historical URLs — filtering static noise & deduplicating patterns", len(rawURLs))
+		urls = analyze.FilterPassiveData(rawURLs)
+		rc.Progress.Stepf("retained %d high-signal dynamic URL patterns", len(urls))
 	}
 
 	subList := make([]models.Subdomain, 0, len(subs))

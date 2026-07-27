@@ -179,3 +179,59 @@ func dedup(in []string) []string {
 
 // Fingerprint is a compact, quoted representation used in log lines.
 func Fingerprint(v any) string { return fmt.Sprintf("%v", v) }
+
+// StaticExtensions lists file extensions considered non-dynamic noise in recon.
+var StaticExtensions = map[string]bool{
+	".png": true, ".jpg": true, ".jpeg": true, ".gif": true, ".svg": true,
+	".css": true, ".woff": true, ".woff2": true, ".ttf": true, ".ico": true,
+	".eot": true, ".mp4": true, ".mp3": true, ".webp": true, ".pdf": true,
+}
+
+// IsStaticNoise checks if a URL points to a static media or font file.
+func IsStaticNoise(rawURL string) bool {
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return false
+	}
+	path := strings.ToLower(u.Path)
+	for ext := range StaticExtensions {
+		if strings.HasSuffix(path, ext) {
+			return true
+		}
+	}
+	return false
+}
+
+// FilterPassiveData deduplicates, filters static noise, and clusters URLs into dynamic patterns.
+func FilterPassiveData(urls []models.URLEntry) []models.URLEntry {
+	seenPatterns := make(map[string]bool)
+	var filtered []models.URLEntry
+
+	for _, entry := range urls {
+		if IsStaticNoise(entry.URL) {
+			continue
+		}
+		u, err := url.Parse(entry.URL)
+		if err != nil {
+			continue
+		}
+
+		// Normalize query params for pattern matching (e.g. /item?id=123 -> /item?id={param})
+		q := u.Query()
+		keys := make([]string, 0, len(q))
+		for k := range q {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		patternKey := u.Host + u.Path + "?" + strings.Join(keys, "&")
+
+		if seenPatterns[patternKey] {
+			continue
+		}
+		seenPatterns[patternKey] = true
+		filtered = append(filtered, entry)
+	}
+
+	return filtered
+}
+
