@@ -36,21 +36,18 @@ type menuEntry struct {
 }
 
 var mainMenu = []menuEntry{
-	{"1", "Recon", "Full reconnaissance scan (quick/standard/deep)", "", ""},
-	{"2", "JavaScript Intelligence", "Analyze JavaScript for endpoints & secrets", models.ModeCustom, "jsintel"},
-	{"3", "API Intelligence", "Discover REST/GraphQL/Swagger surfaces", models.ModeCustom, "apiintel"},
-	{"4", "Login Intelligence", "Find login pages and admin panels", models.ModeCustom, "loginintel"},
-	{"5", "Technology Fingerprinting", "Detect servers, frameworks, CDNs, WAFs", models.ModeCustom, "techfp"},
-	{"6", "Sensitive Files", "Probe for exposed configs and secrets", models.ModeCustom, "sensitive"},
-	{"7", "Parameters", "Aggregate request parameters", models.ModeCustom, "params"},
-	{"8", "Security Analysis", "Headers, cookies, CORS, and TLS", models.ModeCustom, "security"},
-	{"9", "Screenshots", "Capture interesting pages", models.ModeCustom, "screenshot"},
-	{"10", "Reports", "Generate HTML/PDF/MD/JSON/CSV reports", "", ""},
-	{"11", "Workspaces", "Browse per-target workspaces", "", ""},
-	{"12", "Monitoring", "Diff against previous scans", models.ModeCustom, "monitoring"},
-	{"13", "AI Assistant", "Explain and prioritize findings", "", ""},
-	{"14", "Plugins", "External tool integrations", "", ""},
-	{"15", "Settings", "Configuration overview", "", ""},
+	{"1", "Passive OSINT Recon", "Zero-contact passive intelligence (CT Logs, Passive DNS, Wayback archives)", models.ModeQuick, ""},
+	{"2", "Standard Recon", "Balanced passive + live host probing + header analysis", models.ModeStandard, ""},
+	{"3", "Deep Attack Surface Discovery", "Exhaustive crawling, JS secrets, APIs, & sensitive files", models.ModeDeep, ""},
+	{"4", "JavaScript Intelligence", "Analyze JS bundles for endpoints, API keys, & secrets", models.ModeCustom, "jsintel"},
+	{"5", "API Intelligence", "Discover REST, GraphQL, Swagger, & OpenAPI surfaces", models.ModeCustom, "apiintel"},
+	{"6", "Login & Auth Intelligence", "Identify login portals, admin panels, & auth mechanisms", models.ModeCustom, "loginintel"},
+	{"7", "Technology Fingerprinting", "Detect servers, frameworks, CDNs, & WAFs", models.ModeCustom, "techfp"},
+	{"8", "Sensitive Files & Configs", "Probe for exposed .env, .git, backups, & credentials", models.ModeCustom, "sensitive"},
+	{"9", "Security Analysis", "Inspect security headers, CORS, cookies, & TLS posture", models.ModeCustom, "security"},
+	{"10", "Web Workspace Dashboard", "Launch interactive browser dashboard server", "", ""},
+	{"11", "Workspace Manager", "Browse per-target databases & scan history", "", ""},
+	{"12", "AI Triage Assistant", "Explain findings and prioritize risk posture", "", ""},
 	{"0", "Exit", "Quit ThreatPrism", "", ""},
 }
 
@@ -217,12 +214,13 @@ func (a *App) keyTarget(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		}
 		a.target = t
 		a.err = nil
-		if a.selectedEntry.num == "1" {
-			a.screen = screenMode
-			return a, nil
+		if a.selectedEntry.mode != "" {
+			if a.selectedEntry.mode == models.ModeCustom {
+				return a.startScan(models.ModeCustom, []string{a.selectedEntry.slug})
+			}
+			return a.startScan(a.selectedEntry.mode, nil)
 		}
-		// Single-module custom run.
-		return a.startScan(models.ModeCustom, []string{a.selectedEntry.slug})
+		return a.startScan(models.ModeStandard, nil)
 	}
 	var cmd tea.Cmd
 	a.input, cmd = a.input.Update(msg)
