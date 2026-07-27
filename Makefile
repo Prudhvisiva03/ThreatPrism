@@ -16,13 +16,13 @@ LDFLAGS     := -s -w \
 all: build
 
 build:
-	go build -ldflags "$(LDFLAGS)" -o bin/$(BINARY) $(CMD)
+	CGO_ENABLED=0 go build -ldflags "$(LDFLAGS)" -o bin/$(BINARY) $(CMD)
 
 run: build
 	./bin/$(BINARY)
 
 install:
-	go install -ldflags "$(LDFLAGS)" $(CMD)
+	CGO_ENABLED=0 go install -ldflags "$(LDFLAGS)" $(CMD)
 
 tidy:
 	go mod tidy

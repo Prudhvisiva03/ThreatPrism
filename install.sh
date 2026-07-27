@@ -63,8 +63,8 @@ else
 fi
 
 # 5. Build ThreatPrism Binary
-echo -e "${CYAN}[*] Building ThreatPrism binary...${RESET}"
-make build || go build -ldflags "-s -w" -o bin/threatprism ./cmd/threatprism
+echo -e "${CYAN}[*] Building ThreatPrism binary (CGO-free pure Go)...${RESET}"
+make build || CGO_ENABLED=0 go build -ldflags "-s -w" -o bin/threatprism ./cmd/threatprism
 
 if [ ! -f "bin/threatprism" ]; then
     echo -e "${RED}[!] Build failed. Executable bin/threatprism not found.${RESET}"
