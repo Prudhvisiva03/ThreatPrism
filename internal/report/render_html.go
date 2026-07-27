@@ -146,6 +146,13 @@ summary{cursor:pointer;font-weight:600}
     </div>
   </div>
 
+  <div class="section">
+    <h2>Universal One-Search</h2>
+    <div class="controls">
+      <input type="search" id="oneSearch" placeholder="Search anything (JWT, admin, config, API, key, etc.)..." oninput="globalOneSearch()" style="font-size:15px;padding:12px;width:100%;border-color:var(--accent)">
+    </div>
+  </div>
+
   {{if .Findings}}
   <div class="section">
     <h2>Findings</h2>
@@ -306,6 +313,15 @@ function filterFindings(){
   });
 }
 function toggleSev(el){el.classList.toggle('active');filterFindings();}
+function globalOneSearch(){
+  var q=document.getElementById('oneSearch').value.toLowerCase();
+  var elements=document.querySelectorAll('tr, details, .chip, details summary');
+  elements.forEach(function(el){
+    if(!q){ el.style.display=''; return; }
+    var text=(el.innerText || el.textContent || '').toLowerCase();
+    el.style.display=text.indexOf(q)>=0?'':'none';
+  });
+}
 </script>
 </body>
 </html>`

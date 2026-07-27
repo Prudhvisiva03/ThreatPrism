@@ -77,6 +77,16 @@ CREATE TABLE IF NOT EXISTS results (
     scan_id INTEGER PRIMARY KEY REFERENCES scans(id) ON DELETE CASCADE,
     json    TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS notes (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    target     TEXT    NOT NULL,
+    asset_url  TEXT    NOT NULL,
+    text       TEXT    NOT NULL,
+    tags       TEXT    NOT NULL DEFAULT '[]',
+    created_at DATETIME NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_notes_target ON notes(target);
 `
 	_, err := s.db.Exec(schema)
 	if err != nil {
@@ -235,9 +245,6 @@ func scanRows(rows *sql.Rows) ([]models.Scan, error) {
 		sc.Mode = models.Mode(mode)
 		sc.Status = models.ScanStatus(status)
 		_ = json.Unmarshal([]byte(mods), &sc.Modules)
-		if ended.Valid {
-			sc.EndedAt = ended.Time
-		}
 		if errText.Valid {
 			sc.Error = errText.String
 		}
@@ -245,3 +252,34 @@ func scanRows(rows *sql.Rows) ([]models.Scan, error) {
 	}
 	return out, rows.Err()
 }
+
+// SaveNote persists an investigation notebook entry.
+func (s *Store) SaveNote(n *models.Note) error {
+	tagsJSON, _ := json.Marshal(n.Tags)
+	_, err := s.db.Exec(
+		`INSERT INTO notes (target, asset_url, text, tags, created_at) VALUES (?, ?, ?, ?, ?)`,
+		n.Target, n.AssetURL, n.Text, string(tagsJSON), time.Now())
+	return err
+}
+
+// GetNotes retrieves all investigation notebook entries for a target.
+func (s *Store) GetNotes(target string) ([]models.Note, error) {
+	rows, err := s.db.Query(`SELECT id, target, asset_url, text, tags, created_at FROM notes WHERE target = ? ORDER BY id DESC`, target)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []models.Note
+	for rows.Next() {
+		var n models.Note
+		var tagsJSON string
+		if err := rows.Scan(&n.ID, &n.Target, &n.AssetURL, &n.Text, &tagsJSON, &n.CreatedAt); err != nil {
+			return nil, err
+		}
+		_ = json.Unmarshal([]byte(tagsJSON), &n.Tags)
+		out = append(out, n)
+	}
+	return out, nil
+}
+

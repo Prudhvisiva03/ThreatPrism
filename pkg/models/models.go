@@ -208,3 +208,30 @@ type TLSInfo struct {
 	Expired    bool      `json:"expired"`
 	SelfSigned bool      `json:"self_signed"`
 }
+
+// Note represents an investigation notebook entry attached to an asset.
+type Note struct {
+	ID        int64     `json:"id"`
+	Target    string    `json:"target"`
+	AssetURL  string    `json:"asset_url"`
+	Text      string    `json:"text"`
+	Tags      []string  `json:"tags,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+// AssetRating represents AI 5-star scoring and rationale for an asset.
+type AssetRating struct {
+	AssetURL string   `json:"asset_url"`
+	Stars    int      `json:"stars"` // 1 to 5
+	Reason   string   `json:"reason"`
+	Tags     []string `json:"tags,omitempty"`
+}
+
+// TimelineEvent represents a historical change event across scans.
+type TimelineEvent struct {
+	Timestamp time.Time `json:"timestamp"`
+	Summary   string    `json:"summary"`
+	Category  string    `json:"category"` // js, api, login, header, tech
+	Delta     string    `json:"delta"`
+}
+

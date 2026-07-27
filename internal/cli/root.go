@@ -70,6 +70,7 @@ func NewRootCmd(version string) *cobra.Command {
 		newConfigCmd(),
 		newAICmd(),
 		newWebCmd(),
+		newNoteCmd(),
 	)
 	root.AddCommand(newModuleCmds()...)
 
