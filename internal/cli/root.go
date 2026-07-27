@@ -47,8 +47,12 @@ func NewRootCmd(version string) *cobra.Command {
 			app, err = build(cfg)
 			return err
 		},
-		// No subcommand → interactive dashboard.
+		// No subcommand → interactive dashboard; target arg → direct recon scan.
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if len(args) > 0 {
+				reconCmd := newReconCmd()
+				return reconCmd.RunE(cmd, args)
+			}
 			return runMenu()
 		},
 	}
